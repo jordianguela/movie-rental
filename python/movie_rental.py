@@ -66,50 +66,6 @@ class MovieStatementInfo:
         self.rental_price = rental_price
 
 
-class Printer(ABC):
-    @abstractmethod
-    def generate_statement(self,
-                           customer_name: str,
-                           movie_statement_info: [],
-                           total_owed_amount: float,
-                           frequent_renter_points: int) -> str:
-        pass
-
-
-class DefaultStatementPrinter(Printer):
-    def generate_statement(self,
-                           customer_name: str,
-                           movie_statements_info: List[MovieStatementInfo],
-                           total_owed_amount: float,
-                           frequent_renter_points: int) -> str:
-        statement = "Rental Record for " + customer_name + "\n"
-
-        for movie_statement_info in movie_statements_info:
-            statement += "\t" + movie_statement_info.movie_name + "\t" + str(movie_statement_info.rental_price) + "\n"
-
-        statement += "Amount owed is " + str(total_owed_amount) + "\n"
-        statement += "You earned " + str(frequent_renter_points) + " frequent renter points"
-        return statement
-
-
-class HtmlStatementPrinter(Printer):
-    def generate_statement(self,
-                           customer_name: str,
-                           movie_statements_info: List[MovieStatementInfo],
-                           total_owed_amount: float,
-                           frequent_renter_points: int) -> str:
-        statement = "<h1>Rental Record for <em>" + customer_name + "</em></h1>\n"
-
-        statement += "<table>\n"
-        for movie_statement_info in movie_statements_info:
-            statement += "\t<tr><td>" + movie_statement_info.movie_name + "</td><td>" + str(movie_statement_info.rental_price) + "</td></tr>\n"
-        statement += "</table>\n"
-
-        statement += "<p>Amount owed is <em>" + str(total_owed_amount) + "</em></p>\n"
-        statement += "<p>You earned <em>" + str(frequent_renter_points) + "</em> frequent renter points</p>"
-        return statement
-
-
 class Rentals:
     def __init__(self):
         self._rentals = []
@@ -138,16 +94,47 @@ class Rentals:
         return movie_statements_info
 
 
+class Printer(ABC):
+    @abstractmethod
+    def generate_statement(self, customer_name: str, rentals: Rentals) -> str:
+        pass
+
+
+class DefaultStatementPrinter(Printer):
+    def generate_statement(self, customer_name: str, rentals: Rentals) -> str:
+        statement = "Rental Record for " + customer_name + "\n"
+
+        for movie_statement_info in rentals.generate_movie_statements_info():
+            statement += "\t" + movie_statement_info.movie_name + "\t" + str(movie_statement_info.rental_price) + "\n"
+
+        statement += "Amount owed is " + str(rentals.calculate_total_owed_amount()) + "\n"
+        statement += "You earned " + str(rentals.calculate_earned_frequent_renter_points()) + " frequent renter points"
+        return statement
+
+
+class HtmlStatementPrinter(Printer):
+    def generate_statement(self, customer_name: str, rentals: Rentals) -> str:
+        statement = "<h1>Rental Record for <em>" + customer_name + "</em></h1>\n"
+
+        statement += "<table>\n"
+        for movie_statement_info in rentals.generate_movie_statements_info():
+            statement += "\t<tr><td>" + movie_statement_info.movie_name + "</td><td>" + str(
+                movie_statement_info.rental_price) + "</td></tr>\n"
+        statement += "</table>\n"
+
+        statement += "<p>Amount owed is <em>" + str(rentals.calculate_total_owed_amount()) + "</em></p>\n"
+        statement += "<p>You earned <em>" + str(
+            rentals.calculate_earned_frequent_renter_points()) + "</em> frequent renter points</p>"
+        return statement
+
+
 class Customer:
     def __init__(self, name: str):
         self.name = name
         self.rentals = Rentals()
 
     def print_statement(self, printer: Printer):
-        movie_statements_info = self.rentals.generate_movie_statements_info()
-        total_owed_amount = self.rentals.calculate_total_owed_amount()
-        frequent_renter_points = self.rentals.calculate_earned_frequent_renter_points()
-        return printer.generate_statement(self.name, movie_statements_info, total_owed_amount, frequent_renter_points)
+        return printer.generate_statement(self.name, self.rentals)
 
     def add_rental(self, rental: Rental):
         self.rentals.add(rental)
