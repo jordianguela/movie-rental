@@ -9,7 +9,7 @@ class MovieType(ABC):
         pass
 
     @abstractmethod
-    def calculate_earned_rental_frequent_renter_points(self, days_rented: int) -> int:
+    def calculate_frequent_renter_points(self, days_rented: int) -> int:
         pass
 
 
@@ -20,7 +20,7 @@ class RegularMovie(MovieType):
             rental_price += (days_rented - 2) * 1.5
         return rental_price
 
-    def calculate_earned_rental_frequent_renter_points(self, days_rented: int) -> int:
+    def calculate_frequent_renter_points(self, days_rented: int) -> int:
         return 1
 
 
@@ -28,7 +28,7 @@ class NewReleaseMovie(MovieType):
     def calculate_rental_price(self, days_rented: int) -> float:
         return days_rented * 3.0
 
-    def calculate_earned_rental_frequent_renter_points(self, days_rented: int) -> int:
+    def calculate_frequent_renter_points(self, days_rented: int) -> int:
         return 2 if days_rented > 1 else 1
 
 
@@ -39,7 +39,7 @@ class ChildrenMovie(MovieType):
             rental_price += (days_rented - 3) * 1.5
         return rental_price
 
-    def calculate_earned_rental_frequent_renter_points(self, days_rented: int) -> int:
+    def calculate_frequent_renter_points(self, days_rented: int) -> int:
         return 1
 
 
@@ -56,6 +56,9 @@ class Rental:
 
     def calculate_rental_price(self) -> float:
         return self.movie.movie_type.calculate_rental_price(self.days_rented)
+
+    def calculate_earned_rental_frequent_renter_points(self) -> int:
+        return self.movie.movie_type.calculate_frequent_renter_points(self.days_rented)
 
 
 class MovieStatementInfo:
@@ -121,7 +124,7 @@ class Customer:
         for rental in self._rentals:
             rental_price = rental.calculate_rental_price()
             movie_statements_info.append(MovieStatementInfo(rental.movie.title, rental_price))
-            frequent_renter_points += rental.movie.movie_type.calculate_earned_rental_frequent_renter_points(rental.days_rented)
+            frequent_renter_points += rental.calculate_earned_rental_frequent_renter_points()
             total_owed_amount += rental_price
 
         return printer.generate_statement(self.name, movie_statements_info, total_owed_amount, frequent_renter_points)
