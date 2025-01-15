@@ -3,16 +3,50 @@ from enum import Enum
 from typing import List
 
 
-class MoviePriceCode(Enum):
-    REGULAR = 0
-    NEW_RELEASE = 1
-    CHILDREN = 2
+class MovieType(ABC):
+    @abstractmethod
+    def calculate_rental_price(self, days_rented: int) -> float:
+        pass
+
+    @abstractmethod
+    def calculate_earned_rental_frequent_renter_points(self, days_rented: int) -> int:
+        pass
+
+
+class RegularMovie(MovieType):
+    def calculate_rental_price(self, days_rented: int) -> float:
+        rental_price = 2.0
+        if days_rented > 2:
+            rental_price += (days_rented - 2) * 1.5
+        return rental_price
+
+    def calculate_earned_rental_frequent_renter_points(self, days_rented: int) -> int:
+        return 1
+
+
+class NewReleaseMovie(MovieType):
+    def calculate_rental_price(self, days_rented: int) -> float:
+        return days_rented * 3.0
+
+    def calculate_earned_rental_frequent_renter_points(self, days_rented: int) -> int:
+        return 2 if days_rented > 1 else 1
+
+
+class ChildrenMovie(MovieType):
+    def calculate_rental_price(self, days_rented: int) -> float:
+        rental_price = 1.5
+        if days_rented > 3:
+            rental_price += (days_rented - 3) * 1.5
+        return rental_price
+
+    def calculate_earned_rental_frequent_renter_points(self, days_rented: int) -> int:
+        return 1
 
 
 class Movie:
-    def __init__(self, title: str, price_code: MoviePriceCode):
+    def __init__(self, title: str, movie_type: MovieType):
         self.title = title
-        self.price_code = price_code
+        self.movie_type = movie_type
 
 
 class Rental:
@@ -21,20 +55,7 @@ class Rental:
         self.movie = movie
 
     def calculate_rental_price(self) -> float:
-        this_amount = 0.0
-
-        if self.movie.price_code == MoviePriceCode.REGULAR:
-            this_amount += 2
-            if self.days_rented > 2:
-                this_amount += (self.days_rented - 2) * 1.5
-        elif self.movie.price_code == MoviePriceCode.NEW_RELEASE:
-            this_amount += self.days_rented * 3
-        elif self.movie.price_code == MoviePriceCode.CHILDREN:
-            this_amount += 1.5
-            if self.days_rented > 3:
-                this_amount += (self.days_rented - 3) * 1.5
-
-        return this_amount
+        return self.movie.movie_type.calculate_rental_price(self.days_rented)
 
 
 class MovieStatementInfo:
@@ -86,6 +107,7 @@ class HtmlStatementPrinter(Printer):
         statement += "<p>You earned <em>" + str(frequent_renter_points) + "</em> frequent renter points</p>"
         return statement
 
+
 class Customer:
     def __init__(self, name: str):
         self.name = name
@@ -99,9 +121,7 @@ class Customer:
         for rental in self._rentals:
             rental_price = rental.calculate_rental_price()
             movie_statements_info.append(MovieStatementInfo(rental.movie.title, rental_price))
-            frequent_renter_points += 1
-            if (rental.movie.price_code == MoviePriceCode.NEW_RELEASE) and rental.days_rented > 1:
-                frequent_renter_points += 1
+            frequent_renter_points += rental.movie.movie_type.calculate_earned_rental_frequent_renter_points(rental.days_rented)
             total_owed_amount += rental_price
 
         return printer.generate_statement(self.name, movie_statements_info, total_owed_amount, frequent_renter_points)
