@@ -1,18 +1,18 @@
 import unittest
 
-from movie_rental import Customer, Rental, Movie, DefaultStatementPrinter, HtmlStatementPrinter, RegularMovie, ChildrenMovie, NewReleaseMovie
+from movie_rental import Customer, Rental, Movie, DefaultStatementPrinter, HtmlStatementPrinter, RegularMovieType, ChildrenMovieType, NewReleaseMovieType
 
 
 class MovieRental(unittest.TestCase):
 
     def test_default_statement_printter(self):
         customer = Customer("Bob")
-        customer.add_rental(Rental(Movie("Jaws", RegularMovie()), 2))
-        customer.add_rental(Rental(Movie("Golden Eye", RegularMovie()), 3))
-        customer.add_rental(Rental(Movie("Short New", NewReleaseMovie()), 1))
-        customer.add_rental(Rental(Movie("Long New", NewReleaseMovie()), 2))
-        customer.add_rental(Rental(Movie("Bambi", ChildrenMovie()), 3))
-        customer.add_rental(Rental(Movie("Toy Story", ChildrenMovie()), 4))
+        customer.add_rental(Rental(Movie("Jaws", RegularMovieType()), 2))
+        customer.add_rental(Rental(Movie("Golden Eye", RegularMovieType()), 3))
+        customer.add_rental(Rental(Movie("Short New", NewReleaseMovieType()), 1))
+        customer.add_rental(Rental(Movie("Long New", NewReleaseMovieType()), 2))
+        customer.add_rental(Rental(Movie("Bambi", ChildrenMovieType()), 3))
+        customer.add_rental(Rental(Movie("Toy Story", ChildrenMovieType()), 4))
 
         expected = "Rental Record for Bob\n"
         expected += "\tJaws\t2.0\n"
@@ -29,8 +29,8 @@ class MovieRental(unittest.TestCase):
 
     def test_html_statement_printter(self):
         customer = Customer("martin")
-        customer.add_rental(Rental(Movie("Ran", RegularMovie()), 3))
-        customer.add_rental(Rental(Movie("Trois Couleurs: Bleu", RegularMovie()), 2))
+        customer.add_rental(Rental(Movie("Ran", RegularMovieType()), 3))
+        customer.add_rental(Rental(Movie("Trois Couleurs: Bleu", RegularMovieType()), 2))
 
         expected = "<h1>Rental Record for <em>martin</em></h1>\n"
         expected += "<table>\n"

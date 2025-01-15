@@ -12,7 +12,7 @@ class MovieType(ABC):
         pass
 
 
-class RegularMovie(MovieType):
+class RegularMovieType(MovieType):
     def calculate_rental_price(self, days_rented: int) -> float:
         rental_price = 2.0
         if days_rented > 2:
@@ -23,7 +23,7 @@ class RegularMovie(MovieType):
         return 1
 
 
-class NewReleaseMovie(MovieType):
+class NewReleaseMovieType(MovieType):
     def calculate_rental_price(self, days_rented: int) -> float:
         return days_rented * 3.0
 
@@ -31,7 +31,7 @@ class NewReleaseMovie(MovieType):
         return 2 if days_rented > 1 else 1
 
 
-class ChildrenMovie(MovieType):
+class ChildrenMovieType(MovieType):
     def calculate_rental_price(self, days_rented: int) -> float:
         rental_price = 1.5
         if days_rented > 3:
