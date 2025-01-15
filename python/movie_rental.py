@@ -1,16 +1,21 @@
-class Movie:
-    CHILDREN = 2
+from enum import Enum
+
+
+class MoviePriceCode(Enum):
     REGULAR = 0
     NEW_RELEASE = 1
+    CHILDREN = 2
 
-    def __init__(self, title: str, price_code):
+
+class Movie:
+    def __init__(self, title: str, price_code: MoviePriceCode):
         self.title = title
         self.price_code = price_code
 
-    def get_price_code(self):
+    def get_price_code(self) -> MoviePriceCode:
         return self.price_code
 
-    def set_price_code(self, price_code):
+    def set_price_code(self, price_code: MoviePriceCode):
         self.price_code = price_code
 
     def get_title(self) -> str:
@@ -46,13 +51,13 @@ class Customer:
             this_amount = 0.0
 
             # determine amounts for each line
-            if each.get_movie().get_price_code() == Movie.REGULAR:
+            if each.get_movie().get_price_code() == MoviePriceCode.REGULAR:
                 this_amount += 2
                 if each.get_days_rented() > 2:
                     this_amount += (each.get_days_rented() - 2) * 1.5
-            elif each.get_movie().get_price_code() == Movie.NEW_RELEASE:
+            elif each.get_movie().get_price_code() == MoviePriceCode.NEW_RELEASE:
                 this_amount += each.get_days_rented() * 3
-            elif each.get_movie().get_price_code() == Movie.CHILDREN:
+            elif each.get_movie().get_price_code() == MoviePriceCode.CHILDREN:
                 this_amount += 1.5
                 if each.get_days_rented() > 3:
                     this_amount += (each.get_days_rented() - 3) * 1.5
@@ -60,7 +65,7 @@ class Customer:
             # add frequent renter points
             frequent_renter_points += 1
             # add bonus for a two day new release rental
-            if (each.get_movie().get_price_code() == Movie.NEW_RELEASE) and each.get_days_rented() > 1:
+            if (each.get_movie().get_price_code() == MoviePriceCode.NEW_RELEASE) and each.get_days_rented() > 1:
                 frequent_renter_points += 1
 
             # show figures for this rental
