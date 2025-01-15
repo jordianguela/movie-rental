@@ -7,12 +7,12 @@ class MovieRental(unittest.TestCase):
 
     def test_print_default_statement(self):
         customer = Customer("Bob")
-        customer.addRental(Rental(Movie("Jaws", Movie.REGULAR), 2))
-        customer.addRental(Rental(Movie("Golden Eye", Movie.REGULAR), 3))
-        customer.addRental(Rental(Movie("Short New", Movie.NEW_RELEASE), 1))
-        customer.addRental(Rental(Movie("Long New", Movie.NEW_RELEASE), 2))
-        customer.addRental(Rental(Movie("Bambi", Movie.CHILDRENS), 3))
-        customer.addRental(Rental(Movie("Toy Story", Movie.CHILDRENS), 4))
+        customer.add_rental(Rental(Movie("Jaws", Movie.REGULAR), 2))
+        customer.add_rental(Rental(Movie("Golden Eye", Movie.REGULAR), 3))
+        customer.add_rental(Rental(Movie("Short New", Movie.NEW_RELEASE), 1))
+        customer.add_rental(Rental(Movie("Long New", Movie.NEW_RELEASE), 2))
+        customer.add_rental(Rental(Movie("Bambi", Movie.CHILDREN), 3))
+        customer.add_rental(Rental(Movie("Toy Story", Movie.CHILDREN), 4))
 
         expected = "Rental Record for Bob\n"
         expected += "\tJaws\t2.0\n"

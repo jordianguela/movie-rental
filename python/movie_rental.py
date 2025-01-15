@@ -1,77 +1,77 @@
-class Customer:
-    def __init__(self, name):
-        self._rentals = []
-        self.name = name
-
-    def getName(self):
-        return self.name
-
-    def statement(self):
-        totalAmount = 0
-        frequentRenterPoints = 0
-        result = "Rental Record for " + self.getName() + "\n"
-
-        for each in self._rentals:
-            thisAmount = 0.0
-
-            # determine amounts for each line
-            if each.getMovie().getPriceCode() == Movie.REGULAR:
-                thisAmount += 2
-                if each.getDaysRented() > 2:
-                    thisAmount += (each.getDaysRented() - 2) * 1.5
-            elif each.getMovie().getPriceCode() == Movie.NEW_RELEASE:
-                thisAmount += each.getDaysRented() * 3
-            elif each.getMovie().getPriceCode() == Movie.CHILDRENS:
-                thisAmount += 1.5
-                if each.getDaysRented() > 3:
-                    thisAmount += (each.getDaysRented() - 3) * 1.5
-
-            # add frequent renter points
-            frequentRenterPoints += 1
-            # add bonus for a two day new release rental
-            if (each.getMovie().getPriceCode() == Movie.NEW_RELEASE) and each.getDaysRented() > 1:
-                frequentRenterPoints += 1
-
-            # show figures for this rental
-            result += "\t" + each.getMovie().getTitle() + "\t" + str(thisAmount) + "\n"
-            totalAmount += thisAmount
-
-        # add footer lines
-        result += "Amount owed is " + str(totalAmount) + "\n"
-        result += "You earned " + str(frequentRenterPoints) + " frequent renter points"
-
-        return result
-
-    def addRental(self, param):
-        self._rentals.append(param)
-
-
 class Movie:
-    CHILDRENS = 2
-    NEW_RELEASE = 1
+    CHILDREN = 2
     REGULAR = 0
+    NEW_RELEASE = 1
 
-    def __init__(self, title, priceCode):
+    def __init__(self, title: str, price_code):
         self.title = title
-        self.priceCode = priceCode
+        self.price_code = price_code
 
-    def getPriceCode(self):
-        return self.priceCode
+    def get_price_code(self):
+        return self.price_code
 
-    def setPriceCode(self, arg):
-        self.priceCode = arg
+    def set_price_code(self, price_code):
+        self.price_code = price_code
 
-    def getTitle(self):
+    def get_title(self) -> str:
         return self.title
 
 
 class Rental:
-    def __init__(self, movie, daysRented):
-        self.daysRented = daysRented
+    def __init__(self, movie: Movie, days_rented: int):
+        self.daysRented = days_rented
         self.movie = movie
 
-    def getDaysRented(self):
+    def get_days_rented(self) -> int:
         return self.daysRented
 
-    def getMovie(self):
+    def get_movie(self) -> Movie:
         return self.movie
+
+
+class Customer:
+    def __init__(self, name: str):
+        self._rentals = []
+        self.name = name
+
+    def get_name(self):
+        return self.name
+
+    def statement(self):
+        total_amount = 0
+        frequent_renter_points = 0
+        result = "Rental Record for " + self.get_name() + "\n"
+
+        for each in self._rentals:
+            this_amount = 0.0
+
+            # determine amounts for each line
+            if each.get_movie().get_price_code() == Movie.REGULAR:
+                this_amount += 2
+                if each.get_days_rented() > 2:
+                    this_amount += (each.get_days_rented() - 2) * 1.5
+            elif each.get_movie().get_price_code() == Movie.NEW_RELEASE:
+                this_amount += each.get_days_rented() * 3
+            elif each.get_movie().get_price_code() == Movie.CHILDREN:
+                this_amount += 1.5
+                if each.get_days_rented() > 3:
+                    this_amount += (each.get_days_rented() - 3) * 1.5
+
+            # add frequent renter points
+            frequent_renter_points += 1
+            # add bonus for a two day new release rental
+            if (each.get_movie().get_price_code() == Movie.NEW_RELEASE) and each.get_days_rented() > 1:
+                frequent_renter_points += 1
+
+            # show figures for this rental
+            result += "\t" + each.get_movie().get_title() + "\t" + str(this_amount) + "\n"
+            total_amount += this_amount
+
+        # add footer lines
+        result += "Amount owed is " + str(total_amount) + "\n"
+        result += "You earned " + str(frequent_renter_points) + " frequent renter points"
+
+        return result
+
+    def add_rental(self, rental: Rental):
+        self._rentals.append(rental)
