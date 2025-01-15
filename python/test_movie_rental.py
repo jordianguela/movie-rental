@@ -24,4 +24,4 @@ class MovieRental(unittest.TestCase):
         expected += "Amount owed is 19.0\n"
         expected += "You earned 7 frequent renter points"
 
-        assert expected == customer.statement()
+        self.assertEquals(expected, customer.statement())
