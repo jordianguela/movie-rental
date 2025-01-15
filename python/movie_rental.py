@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from enum import Enum
 from typing import List
 
 
@@ -111,23 +110,44 @@ class HtmlStatementPrinter(Printer):
         return statement
 
 
-class Customer:
-    def __init__(self, name: str):
-        self.name = name
+class Rentals:
+    def __init__(self):
         self._rentals = []
 
-    def print_statement(self, printer: Printer):
-        total_owed_amount = 0
-        frequent_renter_points = 0
-        movie_statements_info = []
+    def add(self, rental: Rental):
+        self._rentals.append(rental)
 
+    def calculate_total_owed_amount(self) -> float:
+        total_owed_amount = 0.0
+        for rental in self._rentals:
+            rental_price = rental.calculate_rental_price()
+            total_owed_amount += rental_price
+        return total_owed_amount
+
+    def calculate_earned_frequent_renter_points(self):
+        frequent_renter_points = 0
+        for rental in self._rentals:
+            frequent_renter_points += rental.calculate_earned_rental_frequent_renter_points()
+        return frequent_renter_points
+
+    def generate_movie_statements_info(self) -> []:
+        movie_statements_info = []
         for rental in self._rentals:
             rental_price = rental.calculate_rental_price()
             movie_statements_info.append(MovieStatementInfo(rental.movie.title, rental_price))
-            frequent_renter_points += rental.calculate_earned_rental_frequent_renter_points()
-            total_owed_amount += rental_price
+        return movie_statements_info
 
+
+class Customer:
+    def __init__(self, name: str):
+        self.name = name
+        self.rentals = Rentals()
+
+    def print_statement(self, printer: Printer):
+        movie_statements_info = self.rentals.generate_movie_statements_info()
+        total_owed_amount = self.rentals.calculate_total_owed_amount()
+        frequent_renter_points = self.rentals.calculate_earned_frequent_renter_points()
         return printer.generate_statement(self.name, movie_statements_info, total_owed_amount, frequent_renter_points)
 
     def add_rental(self, rental: Rental):
-        self._rentals.append(rental)
+        self.rentals.add(rental)
