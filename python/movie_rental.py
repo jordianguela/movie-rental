@@ -47,6 +47,12 @@ class Movie:
         self.title = title
         self.movie_type = movie_type
 
+    def calculate_rental_price(self, days_rented: int) -> float:
+        return self.movie_type.calculate_rental_price(days_rented)
+
+    def calculate_frequent_renter_points(self, days_rented):
+        return self.movie_type.calculate_frequent_renter_points(days_rented)
+
 
 class Rental:
     def __init__(self, movie: Movie, days_rented: int):
@@ -54,10 +60,13 @@ class Rental:
         self.movie = movie
 
     def calculate_rental_price(self) -> float:
-        return self.movie.movie_type.calculate_rental_price(self.days_rented)
+        return self.movie.calculate_rental_price(self.days_rented)
 
     def calculate_earned_rental_frequent_renter_points(self) -> int:
-        return self.movie.movie_type.calculate_frequent_renter_points(self.days_rented)
+        return self.movie.calculate_frequent_renter_points(self.days_rented)
+
+    def get_movie_title(self) -> str:
+        return self.movie.title
 
 
 class MovieStatementInfo:
@@ -89,8 +98,7 @@ class Rentals:
     def generate_movie_statements_info(self) -> []:
         movie_statements_info = []
         for rental in self._rentals:
-            rental_price = rental.calculate_rental_price()
-            movie_statements_info.append(MovieStatementInfo(rental.movie.title, rental_price))
+            movie_statements_info.append(MovieStatementInfo(rental.get_movie_title(), rental.calculate_rental_price()))
         return movie_statements_info
 
 
