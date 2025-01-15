@@ -74,7 +74,7 @@ class Customer:
         self.name = name
         self._rentals = []
 
-    def statement(self):
+    def print_statement(self, printer: Printer):
         total_owed_amount = 0
         frequent_renter_points = 0
         movie_statements_info = []
@@ -87,8 +87,7 @@ class Customer:
                 frequent_renter_points += 1
             total_owed_amount += rental_price
 
-        default_statement_printer = DefaultStatementPrinter()
-        return default_statement_printer.generate_statement(self.name, movie_statements_info, total_owed_amount, frequent_renter_points)
+        return printer.generate_statement(self.name, movie_statements_info, total_owed_amount, frequent_renter_points)
 
     def add_rental(self, rental: Rental):
         self._rentals.append(rental)

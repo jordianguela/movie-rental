@@ -1,6 +1,6 @@
 import unittest
 
-from movie_rental import Customer, Rental, Movie, MoviePriceCode
+from movie_rental import Customer, Rental, Movie, MoviePriceCode, DefaultStatementPrinter
 
 
 class MovieRental(unittest.TestCase):
@@ -24,4 +24,5 @@ class MovieRental(unittest.TestCase):
         expected += "Amount owed is 19.0\n"
         expected += "You earned 7 frequent renter points"
 
-        self.assertEquals(expected, customer.statement())
+        default_statement_printer = DefaultStatementPrinter()
+        self.assertEquals(expected, customer.print_statement(default_statement_printer))
