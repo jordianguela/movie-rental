@@ -69,6 +69,23 @@ class DefaultStatementPrinter(Printer):
         return statement
 
 
+class HtmlStatementPrinter(Printer):
+    def generate_statement(self,
+                           customer_name: str,
+                           movie_statements_info: List[MovieStatementInfo],
+                           total_owed_amount: float,
+                           frequent_renter_points: int) -> str:
+        statement = "<h1>Rental Record for <em>" + customer_name + "</em></h1>\n"
+
+        statement += "<table>\n"
+        for movie_statement_info in movie_statements_info:
+            statement += "\t<tr><td>" + movie_statement_info.movie_name + "</td><td>" + str(movie_statement_info.rental_price) + "</td></tr>\n"
+        statement += "</table>\n"
+
+        statement += "<p>Amount owed is <em>" + str(total_owed_amount) + "</em></p>\n"
+        statement += "<p>You earned <em>" + str(frequent_renter_points) + "</em> frequent renter points</p>"
+        return statement
+
 class Customer:
     def __init__(self, name: str):
         self.name = name
