@@ -18,6 +18,22 @@ class Rental:
         self.days_rented = days_rented
         self.movie = movie
 
+    def calculate_rental_price(self) -> int:
+        this_amount = 0.0
+
+        if self.movie.price_code == MoviePriceCode.REGULAR:
+            this_amount += 2
+            if self.days_rented > 2:
+                this_amount += (self.days_rented - 2) * 1.5
+        elif self.movie.price_code == MoviePriceCode.NEW_RELEASE:
+            this_amount += self.days_rented * 3
+        elif self.movie.price_code == MoviePriceCode.CHILDREN:
+            this_amount += 1.5
+            if self.days_rented > 3:
+                this_amount += (self.days_rented - 3) * 1.5
+
+        return this_amount
+
 
 class Customer:
     def __init__(self, name: str):
@@ -29,29 +45,17 @@ class Customer:
         frequent_renter_points = 0
         result = "Rental Record for " + self.name + "\n"
 
-        for each in self._rentals:
-            this_amount = 0.0
-
-            # determine amounts for each line
-            if each.movie.price_code == MoviePriceCode.REGULAR:
-                this_amount += 2
-                if each.days_rented > 2:
-                    this_amount += (each.days_rented - 2) * 1.5
-            elif each.movie.price_code == MoviePriceCode.NEW_RELEASE:
-                this_amount += each.days_rented * 3
-            elif each.movie.price_code == MoviePriceCode.CHILDREN:
-                this_amount += 1.5
-                if each.days_rented > 3:
-                    this_amount += (each.days_rented - 3) * 1.5
+        for rental in self._rentals:
+            this_amount = rental.calculate_rental_price()
 
             # add frequent renter points
             frequent_renter_points += 1
             # add bonus for a two day new release rental
-            if (each.movie.price_code == MoviePriceCode.NEW_RELEASE) and each.days_rented > 1:
+            if (rental.movie.price_code == MoviePriceCode.NEW_RELEASE) and rental.days_rented > 1:
                 frequent_renter_points += 1
 
             # show figures for this rental
-            result += "\t" + each.movie.title + "\t" + str(this_amount) + "\n"
+            result += "\t" + rental.movie.title + "\t" + str(this_amount) + "\n"
             total_amount += this_amount
 
         # add footer lines
