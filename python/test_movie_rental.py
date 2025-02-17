@@ -1,6 +1,13 @@
 import unittest
 
-from movie_rental import Customer, Rental, Movie, DefaultStatementPrinter, HtmlStatementPrinter, RegularMovieType, ChildrenMovieType, NewReleaseMovieType
+from domain.Customer import Customer
+from domain.Movie import Movie
+from domain.RegularMovieType import RegularMovieType
+from domain.NewReleaseMovieType import NewReleaseMovieType
+from domain.ChildrenMovieType import ChildrenMovieType
+from domain.Rental import Rental
+from infraestructure.DefaultStatementPrinter import DefaultStatementPrinter
+from infraestructure.HtmlStatementPrinter import HtmlStatementPrinter
 
 
 class MovieRental(unittest.TestCase):
