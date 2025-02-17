@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import List
 
 
 class MovieType(ABC):
@@ -69,15 +68,12 @@ class Rental:
         return self.movie.title
 
 
-class MovieStatementInfo:
-    def __init__(self, movie_name: str, rental_price: float):
-        self.movie_name = movie_name
-        self.rental_price = rental_price
-
-
 class Rentals:
     def __init__(self):
         self._rentals = []
+
+    def __iter__(self):
+        return iter(self._rentals)
 
     def add(self, rental: Rental):
         self._rentals.append(rental)
@@ -95,12 +91,6 @@ class Rentals:
             frequent_renter_points += rental.calculate_earned_rental_frequent_renter_points()
         return frequent_renter_points
 
-    def generate_movie_statements_info(self) -> []:
-        movie_statements_info = []
-        for rental in self._rentals:
-            movie_statements_info.append(MovieStatementInfo(rental.get_movie_title(), rental.calculate_rental_price()))
-        return movie_statements_info
-
 
 class Printer(ABC):
     @abstractmethod
@@ -112,8 +102,8 @@ class DefaultStatementPrinter(Printer):
     def generate_statement(self, customer_name: str, rentals: Rentals) -> str:
         statement = "Rental Record for " + customer_name + "\n"
 
-        for movie_statement_info in rentals.generate_movie_statements_info():
-            statement += "\t" + movie_statement_info.movie_name + "\t" + str(movie_statement_info.rental_price) + "\n"
+        for rental in rentals:
+            statement += "\t" + rental.get_movie_title() + "\t" + str(rental.calculate_rental_price()) + "\n"
 
         statement += "Amount owed is " + str(rentals.calculate_total_owed_amount()) + "\n"
         statement += "You earned " + str(rentals.calculate_earned_frequent_renter_points()) + " frequent renter points"
@@ -125,9 +115,9 @@ class HtmlStatementPrinter(Printer):
         statement = "<h1>Rental Record for <em>" + customer_name + "</em></h1>\n"
 
         statement += "<table>\n"
-        for movie_statement_info in rentals.generate_movie_statements_info():
-            statement += "\t<tr><td>" + movie_statement_info.movie_name + "</td><td>" + str(
-                movie_statement_info.rental_price) + "</td></tr>\n"
+        for rental in rentals:
+            statement += "\t<tr><td>" + rental.get_movie_title() + "</td><td>" + str(
+                rental.calculate_rental_price()) + "</td></tr>\n"
         statement += "</table>\n"
 
         statement += "<p>Amount owed is <em>" + str(rentals.calculate_total_owed_amount()) + "</em></p>\n"
